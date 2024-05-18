@@ -30,6 +30,15 @@ prompt_template = PromptTemplate.from_template(
 )
 chain = prompt_template | llm | StrOutputParser()
 
+# LangChain을 사용하여 PDF 문맥에서 답변 추출
+try:
+    context_result = chain.invoke({
+        "question": "How to interpret Big Five personality traits?",
+        "context": docs
+    })
+except Exception as e:
+    raise HTTPException(status_code=500, detail=f"LangChain 처리 중 오류 발생: {str(e)}")
+
 class BigFiveEvaluation(BaseModel):
     extraversion: str
     neuroticism: str
@@ -104,14 +113,7 @@ def read_root(item: BigFiveEvaluation):
 
 @app.post("/qa/combined")
 def combined_qa(item: BigFiveEvaluation):
-    # LangChain을 사용하여 PDF 문맥에서 답변 추출
-    try:
-        context_result = chain.invoke({
-            "question": "How to interpret Big Five personality traits?",
-            "context": docs
-        })
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"LangChain 처리 중 오류 발생: {str(e)}")
+
 
     # OpenAI API를 사용하여 추가적인 답변 생성
     try:
@@ -151,17 +153,38 @@ def combined_qa(item: BigFiveEvaluation):
 
     """
 
+    # try:
+    #     final_result = client.chat.completions.create(
+    #         model="solar-1-mini-chat",
+    #         messages=[
+    #             {"role": "system", "content": combined_response}
+    #         ],
+    #     )
+    # except Exception as e:
+    #     raise HTTPException(status_code=500, detail=f"OpenAI 처리 중 오류 발생: {str(e)}")
+    
+    # return {"final_response": final_result.choices[0].message.content}
+    # 번역 요청 생성
     try:
-        final_result = client.chat.completions.create(
-            model="solar-1-mini-chat",
+        translation_result = client.chat.completions.create(
+            model="solar-1-mini-translate-enko",
             messages=[
-                {"role": "system", "content": combined_response}
+                {
+                "role": "user",
+                "content": "Father went into his room"
+                },
+                {
+                "role": "assistant",
+                "content": "아버지가방에들어가셨다"
+                },
+                {"role": "user", "content": combined_response}
             ],
+            stream=False,
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"OpenAI 처리 중 오류 발생: {str(e)}")
-    
-    return {"final_response": final_result.choices[0].message.content}
+        raise HTTPException(status_code=500, detail=f"OpenAI 번역 중 오류 발생: {str(e)}")
+
+    return {"final_response": translation_result.choices[0].message.content}
 
 # 서버 실행 (uvicorn을 사용하여 서버를 실행)
 if __name__ == "__main__":
