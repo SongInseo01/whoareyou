@@ -9,7 +9,16 @@ export default function PersonalityTest() {
   const [bigFiveList, setBigFiveList] = useState<IBigFive[]>([]);
 
   const handleFinish = async (values: any) => {
-    // const res = await fetch('${process.env.NEXT_PUBLIC_API_ENDPOINT}/tests', {
+    const bigFiveResult = {
+      extraversion: calculateExtraversion(values),
+      neuroticism: calculateNeuroticism(values),
+      conscientiousness: calculateConscientiousness(values),
+      agreeableness: calculateAgreeableness(values),
+      openness: calculateOpenness(values),
+      commentary: ""
+    }
+
+    // const res = await fetch('http://localhost:8000/chat', {
     //   method: 'POST',
     //   headers: {
     //     'Content-Type': 'application/json'
@@ -17,17 +26,12 @@ export default function PersonalityTest() {
     //   body: JSON.stringify(values),
     // })
     //
-    // const bigFive = await res.json()
+    // const commentary = await res.json();
 
+    // bigFiveResult.commentary = commentary.desc;
+    bigFiveResult.commentary = "난는 너무나 좋은 사람이예여...";
 
-    setBigFiveList(bigFiveList.concat([{
-      extraversion: calculateExtraversion(values),
-      neuroticism: calculateNeuroticism(values),
-      conscientiousness: calculateConscientiousness(values),
-      agreeableness: calculateAgreeableness(values),
-      openness: calculateOpenness(values)
-    }]));
-
+    setBigFiveList(bigFiveList.concat([bigFiveResult]));
     setShowResult(true);
   }
 

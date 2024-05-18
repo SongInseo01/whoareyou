@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import * as echarts from "echarts";
-import {Button, Divider, Space, Typography} from "antd";
+import {Button, Card, Divider, Space, Typography} from "antd";
 import {ReloadOutlined, UserAddOutlined} from "@ant-design/icons";
 
 const {Title} = Typography;
@@ -11,6 +11,7 @@ export interface IBigFive {
   conscientiousness: number;
   agreeableness: number;
   openness: number;
+  commentary: string;
 }
 
 export default function PersonalityTestReport({bigFiveList, onAddPerson}: {
@@ -98,6 +99,15 @@ export default function PersonalityTestReport({bigFiveList, onAddPerson}: {
           }}
         />
       </div>
+      <main className="flex min-h-screen flex-col items-center justify-between p-5">
+        {
+          bigFiveList && bigFiveList.length > 0 &&
+          <Card style={{ width: "100%" }}>
+            {bigFiveList[bigFiveList.length - 1].commentary}
+          </Card>
+        }
+      </main>
+
     </div>
   )
 }
