@@ -103,9 +103,9 @@ export default function PersonalityTestReport({bigFiveList, onAddPerson}: {
         {
           bigFiveList && bigFiveList.length > 0 &&
           <Card style={{ width: "100%" }}>
-            <pre>
+            <div className="whitespace-pre-wrap">
               {bigFiveList[bigFiveList.length - 1].commentary}
-            </pre>
+            </div>
           </Card>
         }
       </main>

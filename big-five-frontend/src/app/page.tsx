@@ -3,43 +3,49 @@
 import {useState} from "react";
 import PersonalityTestForm from "@/components/PersonalityTestForm";
 import PersonalityTestReport, {IBigFive} from "@/components/PersonailtyTestReport";
+import {Spin} from "antd";
 
 export default function PersonalityTest() {
+  const [loading, setLoading] = useState<boolean>(false);
   const [showResult, setShowResult] = useState(false);
   const [bigFiveList, setBigFiveList] = useState<IBigFive[]>([]);
 
   const handleFinish = async (values: any) => {
-    const bigFiveResult : IBigFive = {
-      extraversion: calculateExtraversion(values),
-      neuroticism: calculateNeuroticism(values),
-      conscientiousness: calculateConscientiousness(values),
-      agreeableness: calculateAgreeableness(values),
-      openness: calculateOpenness(values),
+    setLoading(true);
+    try {
+      const bigFiveResult : IBigFive = {
+        extraversion: calculateExtraversion(values),
+        neuroticism: calculateNeuroticism(values),
+        conscientiousness: calculateConscientiousness(values),
+        agreeableness: calculateAgreeableness(values),
+        openness: calculateOpenness(values),
+      }
+
+      const commentaryRequest = {
+        extraversion: translate("", bigFiveResult.extraversion),
+        neuroticism: translate("", bigFiveResult.neuroticism),
+        conscientiousness: translate("", bigFiveResult.conscientiousness),
+        agreeableness: translate("agreeableness", bigFiveResult.agreeableness),
+        openness: translate("openness", bigFiveResult.openness),
+      }
+
+      const res = await fetch('http://localhost:8000/qa', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(commentaryRequest),
+      })
+
+      const commentary = await res.json();
+
+      bigFiveResult.commentary = commentary.desc;
+
+      setBigFiveList(bigFiveList.concat([bigFiveResult]));
+      setShowResult(true);
+    } finally {
+      setLoading(false);
     }
-
-    const bigFiveResult2 = {
-      extraversion: "낮음",
-      neuroticism: "낮음",
-      conscientiousness: "높음",
-      agreeableness: "낮음",
-      openness: "중상",
-    }
-
-    const res = await fetch('http://localhost:8000/qa', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(bigFiveResult2),
-    })
-
-    const commentary = await res.json();
-
-    bigFiveResult.commentary = commentary.desc;
-    // bigFiveResult.commentary = "난는 너무나 좋은 사람이예여...";
-
-    setBigFiveList(bigFiveList.concat([bigFiveResult]));
-    setShowResult(true);
   }
 
   const calculateExtraversion = (values: any) => {
@@ -58,6 +64,55 @@ export default function PersonalityTest() {
     }
 
     return 4;
+  }
+
+  const translate = (char: string, value: number) => {
+    if(char === "agreeableness") {
+      // 10점 이하 낮음, 11~12점 중하, 13 중상, 14~15 높음
+      if (value <= 10) {
+        return "낮음";
+      }
+      if (value >= 11 && value <= 12) {
+        return "중하";
+      }
+      if (value == 13) {
+        return "중상";
+      }
+      if (value >= 14 && value <= 15) {
+        return "높음";
+      }
+      return "낮음"
+    } else if(char === "openness") {
+      // 8점 이하 낮음, 9~10점 중하, 11~12 중상, 13~15 높음
+      if (value <= 8) {
+        return "낮음";
+      }
+      if (value >= 9 && value <= 10) {
+        return "중하";
+      }
+      if (value >= 11 && value <= 12) {
+        return "중상";
+      }
+      if (value >= 13 && value <= 15) {
+        return "높음";
+      }
+      return "낮음"
+    } else {
+      // 2~4 낮음, 5~6 중간, 7~8 중상, 9~10 높음
+      if (value >= 2 && value <= 4) {
+        return "낮음";
+      }
+      if (value >= 5 && value <= 6) {
+        return "중간";
+      }
+      if (value >= 7 && value <= 8) {
+        return "중상";
+      }
+      if (value >= 9 && value <= 10) {
+        return "높음";
+      }
+    }
+
   }
 
   const calculateNeuroticism = (values: any) => {
@@ -138,7 +193,7 @@ export default function PersonalityTest() {
 
   return (
     <>
-      {!showResult ? <PersonalityTestForm onFinish={handleFinish}/>
+      {!showResult ? <PersonalityTestForm loading={loading} onFinish={handleFinish}/>
         : <PersonalityTestReport bigFiveList={bigFiveList} onAddPerson={handleAddPerson}/>}
     </>
   );
