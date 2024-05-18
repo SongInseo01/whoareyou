@@ -11,7 +11,7 @@ export interface IBigFive {
   conscientiousness: number;
   agreeableness: number;
   openness: number;
-  commentary: string;
+  commentary?: string;
 }
 
 export default function PersonalityTestReport({bigFiveList, onAddPerson}: {
@@ -103,7 +103,9 @@ export default function PersonalityTestReport({bigFiveList, onAddPerson}: {
         {
           bigFiveList && bigFiveList.length > 0 &&
           <Card style={{ width: "100%" }}>
-            {bigFiveList[bigFiveList.length - 1].commentary}
+            <pre>
+              {bigFiveList[bigFiveList.length - 1].commentary}
+            </pre>
           </Card>
         }
       </main>

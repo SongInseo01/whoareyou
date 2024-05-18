@@ -9,27 +9,34 @@ export default function PersonalityTest() {
   const [bigFiveList, setBigFiveList] = useState<IBigFive[]>([]);
 
   const handleFinish = async (values: any) => {
-    const bigFiveResult = {
+    const bigFiveResult : IBigFive = {
       extraversion: calculateExtraversion(values),
       neuroticism: calculateNeuroticism(values),
       conscientiousness: calculateConscientiousness(values),
       agreeableness: calculateAgreeableness(values),
       openness: calculateOpenness(values),
-      commentary: ""
     }
 
-    // const res = await fetch('http://localhost:8000/chat', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(values),
-    // })
-    //
-    // const commentary = await res.json();
+    const bigFiveResult2 = {
+      extraversion: "낮음",
+      neuroticism: "낮음",
+      conscientiousness: "높음",
+      agreeableness: "낮음",
+      openness: "중상",
+    }
 
-    // bigFiveResult.commentary = commentary.desc;
-    bigFiveResult.commentary = "난는 너무나 좋은 사람이예여...";
+    const res = await fetch('http://localhost:8000/qa', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(bigFiveResult2),
+    })
+
+    const commentary = await res.json();
+
+    bigFiveResult.commentary = commentary.desc;
+    // bigFiveResult.commentary = "난는 너무나 좋은 사람이예여...";
 
     setBigFiveList(bigFiveList.concat([bigFiveResult]));
     setShowResult(true);
