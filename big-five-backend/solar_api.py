@@ -148,7 +148,9 @@ def combined_qa(item: BigFiveEvaluation):
     I want to know how the Big Five personality traits test results affect social life or work.
     While interpreting, let me know if there is anything you don't understand or if you have any additional questions.
     If there are similar contents in your answers, please shorten them so that they are as easy to read as possible.
-    Please answer in Korean.
+    Then divide the topics and organize them into sections.
+    You need to organize the content by section. You can do it. Do a good job and give me the results.
+    Now, please translate what I just divided into sections into Korean. Maintaining what was divided.
     """
 
     try:
@@ -160,7 +162,7 @@ def combined_qa(item: BigFiveEvaluation):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"OpenAI 처리 중 오류 발생: {str(e)}")
-
+    
     return {"final_response": final_result.choices[0].message.content}
 
 # 서버 실행 (uvicorn을 사용하여 서버를 실행)
