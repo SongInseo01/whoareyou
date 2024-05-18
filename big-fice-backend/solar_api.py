@@ -11,14 +11,13 @@ class BigFiveEvaluation(BaseModel):
     openness: str
 
 app = FastAPI()
-router = APIRouter()
 
 # OpenAI 클라이언트 설정
 client = OpenAI(
     api_key=os.environ["UPSTAGE_API_KEY"], base_url="https://api.upstage.ai/v1/solar"
 )
 
-@router.post("/qa")
+@app.post("/qa")
 def read_root(item: BigFiveEvaluation):
     chat_result = client.chat.completions.create(
         model="solar-1-mini-chat",
@@ -36,7 +35,6 @@ def read_root(item: BigFiveEvaluation):
         ],
     )
 
-    # pprint(chat_result.choices[0].message.content)
     return {"desc": chat_result.choices[0].message.content}
 
 # 서버 실행 (uvicorn을 사용하여 서버를 실행)
