@@ -148,9 +148,8 @@ def combined_qa(item: BigFiveEvaluation):
     I want to know how the Big Five personality traits test results affect social life or work.
     While interpreting, let me know if there is anything you don't understand or if you have any additional questions.
     If there are similar contents in your answers, please shorten them so that they are as easy to read as possible.
-    Then divide the topics and organize them into sections.
-    You need to organize the content by section. You can do it. Do a good job and give me the results.
-    Now, please translate what I just divided into sections into Korean. Maintaining what was divided.
+    Please must do translate the content into Korean.
+
     """
 
     try:
