@@ -29,7 +29,7 @@ export default function PersonalityTest() {
         openness: translate("openness", bigFiveResult.openness),
       }
 
-      const res = await fetch('http://localhost:8000/qa', {
+      const res = await fetch('http://localhost:8000/qa/combined', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ export default function PersonalityTest() {
 
       const commentary = await res.json();
 
-      bigFiveResult.commentary = commentary.desc;
+      bigFiveResult.commentary = commentary["final_response"];
 
       setBigFiveList(bigFiveList.concat([bigFiveResult]));
       setShowResult(true);
