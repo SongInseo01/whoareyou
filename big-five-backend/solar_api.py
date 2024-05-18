@@ -2,6 +2,7 @@ import os
 from pydantic import BaseModel
 from fastapi import APIRouter, FastAPI
 from openai import OpenAI
+from dotenv import load_dotenv
 
 class BigFiveEvaluation(BaseModel):
     extraversion: str
@@ -9,6 +10,8 @@ class BigFiveEvaluation(BaseModel):
     conscientiousness: str
     agreeableness: str
     openness: str
+
+load_dotenv()
 
 app = FastAPI()
 
