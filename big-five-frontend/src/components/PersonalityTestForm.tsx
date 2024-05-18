@@ -6,7 +6,7 @@ import React from "react";
 
 const {Title} = Typography;
 
-export default function PersonalityTestForm({onFinish}: { onFinish: (values: any) => void }) {
+export default function PersonalityTestForm({onFinish, loading}: { onFinish: (values: any) => void, loading: boolean }) {
   const [form] = useForm();
 
   const handleFinish = (values: any) => {
@@ -32,7 +32,7 @@ export default function PersonalityTestForm({onFinish}: { onFinish: (values: any
         <FormItem name="linePoint11" label="11. 어려운 단어를 사용한다"/>
         <FormItem name="linePoint12" label="12. 타인의 감정에 공감한다"/>
         <div className="text-center">
-          <Button type="primary" htmlType="submit" icon={<MonitorOutlined/>}>
+          <Button type="primary" htmlType="submit" icon={<MonitorOutlined/>} loading={loading}>
             제출
           </Button>
         </div>
